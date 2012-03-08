@@ -63,29 +63,31 @@ public class SpinGraph {
     CellNodes cell;
     Iterator<Tile> iter;
 
+    //start at the seed which is at location (0,0)
     nodes[0][0].add(seed);
     spinGraph.addVertex(seed);
 
+    //iterate over the NxN grid
     for(int i = 0; i < depth; i++) {
       for(int j = 0; j < depth; j++) {
         //System.out.println(i + " " + j);
-        cell = nodes[i][j];
+        cell = nodes[i][j]; //list of tile types at location (i,j)
         iter = cell.iterator();
-        while(iter.hasNext()) {
+        while(iter.hasNext()) { //check all tile types at location (i,j)
           t1 = iter.next();
-          for(int k = 0; k < size; k++) {
+          for(int k = 0; k < size; k++) { //compare against all tile types
             t2 = new Tile(tiles.get(k));
-            if(i != depth-1) {
-              if(t1.isNorth(t2)) {
-                t3 = nodes[i+1][j].isTileUnique(t2);
-                if(t3 == null) {
+            if(i != depth-1) { //ignore last row
+              if(t1.isNorth(t2)) { //check for binding to north of current cell
+                t3 = nodes[i+1][j].isTileUnique(t2); 
+                if(t3 == null) { //a new tile type is added
 	          nodes[i+1][j].add(t2);
                   spinGraph.addVertex(t2);
                   de = new DefaultEdge();
 		  //System.out.println(t1 + " added N " + t2);
 	          spinGraph.addEdge(t1,t2,de);
 		  //System.out.println(de + " added N");
-                } else {
+                } else { //a bond is added to an existing tile type
                   de = new DefaultEdge();
 		  //System.out.println(t1 + " added N " + t2);
 	          spinGraph.addEdge(t1,t3,de);
@@ -94,17 +96,17 @@ public class SpinGraph {
               }
             }
 
-	    if(j != depth-1) {
-              if(t1.isWest(t2)) {
+	    if(j != depth-1) { //ignore last column
+              if(t1.isWest(t2)) { //check for binding to west of current cell
                 t3 = nodes[i][j+1].isTileUnique(t2);
-                if(t3 == null) {
+                if(t3 == null) { //a new tile type is added
                   nodes[i][j+1].add(t2);
                   spinGraph.addVertex(t2);
                   de = new DefaultEdge();
 		  //System.out.println(t1 + " added W " + t2);
 	          spinGraph.addEdge(t1,t2,de);
 		  //System.out.println(de + " added W");
-                } else {
+                } else { //a bond is addes to an existing tile type
                   de = new DefaultEdge();
 		  //System.out.println(t1 + " added W " + t2);
 	          spinGraph.addEdge(t1,t3,de);
